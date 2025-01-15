@@ -191,114 +191,114 @@ app.post('/createCar',async (req ,res)=>{
     }
 })
 
-app.get('/getall',(req ,res)=>{
-    User.find()
+app.get('/getAllCars',(req ,res)=>{
+    Car.find()
     .then(
-        (users)=>{
-            res.send(users);
+        (cars)=>{
+            res.status(200).send(cars);
         }
     ).catch(
         (err)=>{
-            res.send(err);
+            res.status(400).send(err);
         }
     )
 });
 
 //async condition age
-app.get('/all',async (req ,res)=>{
+app.get('/allCar',async (req ,res)=>{
     try{
-        users = await User.find({age:20});
-        res.send(users);
+        cars = await Car.find({modele:"BMW"});
+        res.status(200).send(cars);
     }catch(error){
-        res.send(error);
+        res.status(400).send(error);
     }
 
 })
 
-app.get('/getById/:id',(req,res)=>{
+app.get('/getCarById/:id',(req,res)=>{
     myid = req.params.id;
-    User.findOne({_id:myid})
+    Car.findOne({_id:myid})
         .then(
-            (user)=>{
-                res.send(user);
+            (cars)=>{
+                res.status(200).send(cars);
             }
         )
         .catch(
             (err)=>{
-                res.send(err);
+                res.status(400).send(err);
             }
         )
 
 })
 
 //async getById
-app.get('/byId/:id',async(req, res)=>{
+app.get('/carById/:id',async(req, res)=>{
     try{
         id=req.params.id;
-        user=await User.findById({_id:id});
-        res.send(user);
+        car=await Car.findById({_id:id});
+        res.status(200).send(car);
     }
     catch(error){
-        res.send(error);
+        res.status(400).send(error);
     }
 })
 
-app.put('/update/:id',(req ,res)=>{
+app.put('/updateCar/:id',(req ,res)=>{
     id=req.params.id;
     newData=req.body;
 
-    User.findByIdAndUpdate({_id:id},newData)
+    Car.findByIdAndUpdate({_id:id},newData)
     .then (
         (updated)=>{
-            res.send(updated);
+            res.status(200).send(updated);
         }
     ).catch(
         (error)=>{
-            res.send(error);
+            res.status(400).send(error);
         }
     )
     
     
 });
 //update async
-app.put('/upt/:id',async(req,res)=>{
+app.put('/uptCar/:id',async(req,res)=>{
     try{
     id=req.params.id;
     newData=req.body;
-    updated= await User.findByIdAndUpdate({_id:id},newData);
+    updated= await Car.findByIdAndUpdate({_id:id},newData);
 
-    res.send(updated);
+    res.status(200).send(updated);
     } catch(error){
-        res.send(error);
+        res.status(400).send(error);
     }
 })
 
 
 
 
-app.delete('/delete/:id',(req ,res)=>{
+app.delete('/deleteCar/:id',(req ,res)=>{
     id=req.params.id;
-    User.findOneAndDelete({_id:id})
+    Car.findOneAndDelete({_id:id})
         .then(
-            (deleteUser)=>{
-                res.send(deleteUser);
+            (deleteCar)=>{
+                res.status(200).send(deleteCar);
             }
         )
         .catch(
             (err)=>{
-                res.send(deleteUser);
+                res.status(400).send(deleteUser);
             }
         )
 });
 //delete async
-app.delete('/deleteById/:id',async(req,res)=>{
+app.delete('/deleteCarById/:id',async(req,res)=>{
     try{
         id=req.params.id;
-        deleteUser= await User.findByIdAndDelete({_id:id});
-        res.send(deleteUser);
+        deleteCar= await Car.findByIdAndDelete({_id:id});
+        res.status(200).send(deleteCar);
     }
     catch(error){
-        res.send(error);
+        res.status(400).send(error);
     }
 })
 
