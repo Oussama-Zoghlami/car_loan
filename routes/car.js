@@ -3,6 +3,22 @@ const router =express.Router();
 
 const Car =require('../models/car');
 
+//npm i multer:for files or images
+const multer= require('multer');
+
+const myStorage= multer.diskStorage({
+    destination:'./uploads',
+    filename:(req, file, redirect)=>{
+        let date = Date.now();
+        let fil = date + '.' + file.mimetype.split('/')[1];
+        redirect(null, fil);
+        filename =fil;
+    }
+
+})
+
+const upload =multer({storage: myStorage});
+
 
 router.post('/addCar',(req , res)=>{
     data =req.body;
@@ -23,13 +39,15 @@ router.post('/addCar',(req , res)=>{
 
 
 //async
-router.post('/createCar',async (req ,res)=>{
+router.post('/createCar', upload.any('image') ,async (req ,res)=>{
 
     try{
 
         data=req.body;
         car = new Car(data);
+        car.image = filename;
         savedCar= await car.save();
+        filename = '';
         res.status(200).send(savedCar);
 
     }catch(error){

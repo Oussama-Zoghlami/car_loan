@@ -16,6 +16,10 @@ app.use('/car', carRoute);
 app.use('/user', userRoute);
 
 
+//the path for get files and images 
+app.use('/getimage' ,express.static('./uploads'));
+
+
 app.listen( 3000, ()=>{
     console.log('server work!!');
 });
