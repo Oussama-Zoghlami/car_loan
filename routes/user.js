@@ -2,6 +2,8 @@ const express =require('express');
 const router =express.Router();
 
 const User = require('../models/user');
+const Car = require('../models/car');
+
 
 const bcrypt = require('bcrypt');
 
@@ -187,6 +189,61 @@ router.delete('/deleteById/:id',async(req,res)=>{
         res.send(error);
     }
 })
+
+//loan car to user
+
+router.post('/loan-car', async (req, res) => {
+    const { userId, carId } = req.body;
+
+    try {
+        // Find the user and car by IDs
+        const user = await User.findById(userId);
+        const car = await Car.findById(carId);
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        if (!car) {
+            return res.status(404).send('Car not found');
+        }
+
+        if (car.loanedBy) {
+            return res.status(400).send('Car is already loaned');
+        }
+
+        // Mark the car as loaned
+        car.loanedBy = user._id;
+        await car.save();
+
+        // Add the car to the user's loanedCars list
+        user.loanedCars.push(car._id);
+        await user.save();
+
+        res.status(200).send('Car successfully loaned');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+router.get('/:id/loaned-cars', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await User.findById(userId).populate('loanedCars');
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        res.status(200).json(user.loanedCars);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+
 
 
 

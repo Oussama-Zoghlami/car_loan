@@ -13,6 +13,11 @@ const Car =mongoose.model('Car' ,{
     },
     image:{
         type:String
+    }, 
+    loanedBy: { // Reference to the User who loaned this car
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null // Default to null if the car is not loaned
     }
 
 })

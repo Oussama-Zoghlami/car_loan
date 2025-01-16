@@ -2,6 +2,7 @@ const express =require('express');
 const router =express.Router();
 
 const Car =require('../models/car');
+const User = require('../models/user');
 
 //npm i multer:for files or images
 const multer= require('multer');
@@ -166,6 +167,22 @@ router.delete('/deleteCarById/:id',async(req,res)=>{
     }
 })
 
+
+router.get('/:id/loan-status', async (req, res) => {
+    const carId = req.params.id;
+
+    try {
+        const car = await Car.findById(carId).populate('loanedBy');
+        if (!car) {
+            return res.status(404).send('Car not found');
+        }
+
+        res.status(200).json(car.loanedBy);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Something went wrong');
+    }
+});
 
 
 module.exports = router;

@@ -15,7 +15,11 @@ const User = mongoose.model('User' , {
     },
     password:{
         type: String
-    }
+    },
+    loanedCars: [{ // Array of cars loaned by the user
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Car'
+    }]
 
 });
 module.exports =User ;
