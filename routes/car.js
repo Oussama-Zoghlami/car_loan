@@ -1,6 +1,8 @@
 const express =require('express');
 const router =express.Router();
 
+const mongoose = require('mongoose');
+
 const Car =require('../models/car');
 const User = require('../models/user');
 
@@ -183,6 +185,8 @@ router.get('/:id/loan-status', async (req, res) => {
         res.status(500).send('Something went wrong');
     }
 });
+
+
 
 
 module.exports = router;

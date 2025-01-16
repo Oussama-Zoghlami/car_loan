@@ -1,5 +1,6 @@
 const express =require('express');
 const router =express.Router();
+const mongoose = require('mongoose');
 
 const User = require('../models/user');
 const Car = require('../models/car');
@@ -239,6 +240,47 @@ router.get('/:id/loaned-cars', async (req, res) => {
         res.status(200).json(user.loanedCars);
     } catch (err) {
         console.error(err);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+
+
+router.delete('/delete-loan-car', async (req, res) => {
+    const { userId, carId } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(carId)) {
+        return res.status(400).send('Invalid userId or carId');
+    }
+
+    try {
+        // Find the car to ensure it exists
+        const car = await Car.findById(carId);
+        if (!car) {
+            return res.status(404).send('Car not found');
+        }
+
+        // Check if the car is actually loaned by the user
+        if (!car.loanedBy || car.loanedBy.toString() !== userId) {
+            return res.status(400).send('This car is not loaned by the specified user');
+        }
+
+        // Remove the car's loanedBy field
+        car.loanedBy = undefined;
+        await car.save();
+
+        // Find the user and remove the car from their loanedCars array
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        user.loanedCars = user.loanedCars.filter(id => id.toString() !== carId);
+        await user.save();
+
+        res.status(200).send('Loan successfully deleted');
+    } catch (err) {
+        console.error('Error:', err.message);
         res.status(500).send('Something went wrong');
     }
 });
