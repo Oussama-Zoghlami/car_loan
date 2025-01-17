@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
+
 //singup
 
 router.post('/register', async (req ,res)=>{

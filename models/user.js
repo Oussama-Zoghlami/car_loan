@@ -16,6 +16,11 @@ const User = mongoose.model('User' , {
     password:{
         type: String
     },
+    role: {
+        type: String,
+        enum: ['admin', 'user'], // Define roles
+        default: 'user' // Default role is 'user'
+    },
     loanedCars: [{ // Array of cars loaned by the user
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Car'
